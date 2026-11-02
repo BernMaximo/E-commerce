@@ -68,10 +68,10 @@ erDiagram
   - [x] CRUD de categorias e produtos com filtros de busca.
   - [x] Gestão transacional de pedidos e reserva atômica de estoque.
   - [x] Documentação interativa Swagger/OpenAPI em `/docs`.
-- [ ] **Etapa 3: Integrações de Serviços (Modo Sandbox)**
-  - [ ] Checkout Mercado Pago (Pix QR Code e Cartão).
-  - [ ] Webhook receptor com garantia de idempotência.
-  - [ ] Módulo de cotação de frete e prazos por CEP.
+- [x] **Etapa 3: Integrações de Serviços (Modo Sandbox)**
+  - [x] Gateway Mercado Pago: Geração de Pix dinâmico (QR Code e Copia e Cola) e Cartão de Crédito com tokenização.
+  - [x] Webhooks Assíncronos: Endpoint com garantia de idempotência e cancelamento/estorno de estoque.
+  - [x] Logística e Frete: Integração com ViaCEP e cálculo dinâmico de PAC e Sedex por peso e cubagem.
 - [ ] **Etapa 4: Desenvolvimento do Frontend**
   - [ ] Catálogo com busca e filtros reativos.
   - [ ] Carrinho de compras responsivo com persistência local.
