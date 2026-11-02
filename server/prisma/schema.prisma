@@ -1,0 +1,165 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CLIENT @map("client")
+  ADMIN  @map("admin")
+
+  @@map("role_enum")
+}
+
+enum OrderStatus {
+  PENDING   @map("pending")
+  PAID      @map("paid")
+  SHIPPED   @map("shipped")
+  DELIVERED @map("delivered")
+  CANCELED  @map("canceled")
+
+  @@map("order_status_enum")
+}
+
+enum PaymentMethod {
+  PIX         @map("pix")
+  CREDIT_CARD @map("credit_card")
+
+  @@map("payment_method_enum")
+}
+
+enum PaymentStatus {
+  PENDING  @map("pending")
+  APPROVED @map("approved")
+  REJECTED @map("rejected")
+  REFUNDED @map("refunded")
+
+  @@map("payment_status_enum")
+}
+
+model User {
+  id           String    @id @default(uuid()) @db.Uuid
+  name         String    @db.VarChar(150)
+  email        String    @unique @db.VarChar(255)
+  passwordHash String    @map("password_hash") @db.VarChar(255)
+  role         Role      @default(CLIENT)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  addresses    Address[]
+  orders       Order[]
+
+  @@map("users")
+}
+
+model Address {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  recipientName String   @map("recipient_name") @db.VarChar(150)
+  zipcode       String   @db.VarChar(9)
+  street        String   @db.VarChar(255)
+  number        String   @db.VarChar(20)
+  complement    String?  @db.VarChar(100)
+  neighborhood  String   @db.VarChar(100)
+  city          String   @db.VarChar(100)
+  state         String   @db.VarChar(2)
+  isDefault     Boolean  @default(false) @map("is_default")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+
+  @@map("addresses")
+}
+
+model Category {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String    @db.VarChar(100)
+  slug      String    @unique @db.VarChar(120)
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  products  Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          String   @id @default(uuid()) @db.Uuid
+  categoryId  String   @map("category_id") @db.Uuid
+  name        String   @db.VarChar(255)
+  slug        String   @unique @db.VarChar(280)
+  description String?  @db.Text
+  price       Decimal  @db.Decimal(10, 2)
+  stock       Int      @default(0)
+  imageUrl    String   @map("image_url") @db.Text
+  weightG     Int      @default(300) @map("weight_g")
+  lengthCm    Int      @default(20) @map("length_cm")
+  widthCm     Int      @default(15) @map("width_cm")
+  heightCm    Int      @default(10) @map("height_cm")
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  category   Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  orderItems OrderItem[]
+
+  @@map("products")
+}
+
+model Order {
+  id           String      @id @default(uuid()) @db.Uuid
+  orderNumber  String      @unique @map("order_number") @db.VarChar(20)
+  userId       String      @map("user_id") @db.Uuid
+  addressId    String      @map("address_id") @db.Uuid
+  status       OrderStatus @default(PENDING)
+  subtotal     Decimal     @db.Decimal(10, 2)
+  shippingCost Decimal     @default(0.00) @map("shipping_cost") @db.Decimal(10, 2)
+  total        Decimal     @db.Decimal(10, 2)
+  trackingCode String?     @map("tracking_code") @db.VarChar(60)
+  createdAt    DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  user    User        @relation(fields: [userId], references: [id], onDelete: Restrict)
+  address Address     @relation(fields: [addressId], references: [id], onDelete: Restrict)
+  items   OrderItem[]
+  payment Payment?
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id          String  @id @default(uuid()) @db.Uuid
+  orderId     String  @map("order_id") @db.Uuid
+  productId   String  @map("product_id") @db.Uuid
+  productName String  @map("product_name") @db.VarChar(255)
+  quantity    Int
+  unitPrice   Decimal @map("unit_price") @db.Decimal(10, 2)
+  subtotal    Decimal @db.Decimal(10, 2)
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@map("order_items")
+}
+
+model Payment {
+  id            String        @id @default(uuid()) @db.Uuid
+  orderId       String        @unique @map("order_id") @db.Uuid
+  paymentMethod PaymentMethod @map("payment_method")
+  status        PaymentStatus @default(PENDING)
+  transactionId String?       @map("transaction_id") @db.VarChar(120)
+  qrCodePix     String?       @map("qr_code_pix") @db.Text
+  qrCodePixUrl  String?       @map("qr_code_pix_url") @db.Text
+  rawResponse   Json?         @map("raw_response")
+  paidAt        DateTime?     @map("paid_at") @db.Timestamptz
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+

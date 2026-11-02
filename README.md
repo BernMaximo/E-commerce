@@ -62,11 +62,12 @@ erDiagram
   - [x] Modelagem de dados relacional completa (DER e DDL SQL).
   - [x] Máquina de estados para pedidos e pagamentos com controle transacional de estoque.
   - [x] Mapeamento dos fluxos de navegação e wireframes estruturais de telas.
-- [ ] **Etapa 2: Desenvolvimento do Backend (API REST)**
-  - [ ] Configuração do servidor Fastify com TypeScript e Prisma ORM.
-  - [ ] Autenticação com JWT, refresh tokens e hash de senhas.
-  - [ ] CRUD de categorias e produtos com filtros de busca.
-  - [ ] Gestão transacional de pedidos e reserva atômica de estoque.
+- [x] **Etapa 2: Desenvolvimento do Backend (API REST)**
+  - [x] Configuração do servidor Fastify com TypeScript e Prisma ORM.
+  - [x] Autenticação com JWT, refresh tokens e hash de senhas.
+  - [x] CRUD de categorias e produtos com filtros de busca.
+  - [x] Gestão transacional de pedidos e reserva atômica de estoque.
+  - [x] Documentação interativa Swagger/OpenAPI em `/docs`.
 - [ ] **Etapa 3: Integrações de Serviços (Modo Sandbox)**
   - [ ] Checkout Mercado Pago (Pix QR Code e Cartão).
   - [ ] Webhook receptor com garantia de idempotência.
