@@ -132,3 +132,4 @@ erDiagram
 * **`ON DELETE RESTRICT`**:
   * `products` $\rightarrow$ **proibido deletar** um produto se ele já constar em algum `order_items`. Isso impede a corrupção do histórico contábil de compras. Se o administrador não quiser mais vender o produto, ele deve apenas desativá-lo (`active = false`).
   * `users` e `addresses` $\rightarrow$ **proibido deletar** caso possuam vínculos com pedidos já efetuados (`orders`).
+

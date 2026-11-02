@@ -139,3 +139,4 @@ Valores monetários **jamais** devem ser armazenados como `FLOAT` ou `REAL` devi
 
 ### 3. Idempotência em Webhooks
 O webhook do Mercado Pago pode enviar a mesma notificação mais de uma vez (at-least-once delivery). O campo `payments.transaction_id` com índice rápido permite verificar se a notificação já foi processada, evitando alterações duplicadas de status e baixa indevida em estoque.
+

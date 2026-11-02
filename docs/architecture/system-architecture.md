@@ -97,3 +97,4 @@ A API segue o princípio da **Separação de Preocupações (SoC)** e arquitetur
 * Consulta baseada na distância da UF de destino e peso/dimensões acumuladas dos produtos do carrinho:
   $$\text{Frete} = \text{Taxa Base UF} + (\text{Peso Total em kg} \times \text{Valor por kg})$$
 * Retorna opções de entrega (ex: PAC e Sedex simulados com prazo e valor).
+

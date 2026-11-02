@@ -84,3 +84,4 @@ erDiagram
   - [ ] Deploy da API e banco de dados em nuvem.
   - [ ] Deploy do frontend na Vercel.
   - [ ] Guia de execução local e credenciais de teste para recrutadores.
+

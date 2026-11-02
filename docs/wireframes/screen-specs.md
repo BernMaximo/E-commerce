@@ -154,3 +154,4 @@ Este documento define os componentes visuais, hierarquia de informações e esta
 * Lista de todos os pedidos da loja com filtros por status (`Pendente`, `Pago`, `Enviado`, `Cancelado`).
 * Visualização detalhada do comprador e endereço de entrega.
 * Ação de despacho: Campo para digitação do `código de rastreio` e botão para transicionar status para `Enviado`.
+

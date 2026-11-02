@@ -76,3 +76,4 @@ O gateway de pagamento pode reenviar o webhook em caso de lentidão de rede. Par
 1. Ao receber a notificação, consultar `payments` pelo `transaction_id`.
 2. Se `payments.status == 'approved'`, retornar HTTP `200 OK` imediatamente sem alterar dados.
 3. Se ainda for `pending` e o novo status for `approved`, atualizar `orders` e `payments` em uma única transação atômica.
+
