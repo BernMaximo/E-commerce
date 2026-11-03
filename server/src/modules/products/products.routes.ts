@@ -4,7 +4,12 @@ import { z } from 'zod'
 import { authenticate } from '../../middlewares/authenticate.js'
 import { requireRole } from '../../middlewares/require-role.js'
 import { productsController } from './products.controller.js'
-import { createProductSchema, listProductsQuerySchema, updateProductSchema } from './products.schemas.js'
+import {
+  createProductSchema,
+  listAllProductsQuerySchema,
+  listProductsQuerySchema,
+  updateProductSchema
+} from './products.schemas.js'
 
 export async function productsRoutes(app: FastifyInstance) {
   const typedApp = app.withTypeProvider<ZodTypeProvider>()
@@ -20,6 +25,21 @@ export async function productsRoutes(app: FastifyInstance) {
       }
     },
     async (request, reply) => productsController.list(request as any, reply)
+  )
+
+  // Rota admin: listar todos os produtos (inclusive inativos)
+  typedApp.get(
+    '/admin/all',
+    {
+      onRequest: [authenticate, requireRole('ADMIN')],
+      schema: {
+        tags: ['Produtos'],
+        summary: 'Listar todos os produtos, inclusive inativos (Admin)',
+        security: [{ bearerAuth: [] }],
+        querystring: listAllProductsQuerySchema
+      }
+    },
+    async (request, reply) => productsController.listAll(request as any, reply)
   )
 
   // Rota pública: obter produto por slug

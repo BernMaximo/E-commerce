@@ -10,6 +10,15 @@ export const listProductsQuerySchema = z.object({
   sort: z.enum(['price_asc', 'price_desc', 'newest']).default('newest')
 })
 
+export const listAllProductsQuerySchema = z.object({
+  search: z.string().optional(),
+  categoryId: z.string().uuid('ID de categoria inválido').optional(),
+  active: z.enum(['true', 'false']).optional(),
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(20),
+  sort: z.enum(['newest', 'price_asc', 'price_desc', 'name_asc']).default('newest')
+})
+
 export const createProductSchema = z.object({
   categoryId: z.string().uuid('ID de categoria inválido'),
   name: z.string().min(2, 'Nome do produto deve ter pelo menos 2 caracteres').max(255),
@@ -29,6 +38,7 @@ export const updateProductSchema = createProductSchema.partial().extend({
 })
 
 export type ListProductsQuery = z.infer<typeof listProductsQuerySchema>
+export type ListAllProductsQuery = z.infer<typeof listAllProductsQuerySchema>
 export type CreateProductInput = z.infer<typeof createProductSchema>
 export type UpdateProductInput = z.infer<typeof updateProductSchema>
 

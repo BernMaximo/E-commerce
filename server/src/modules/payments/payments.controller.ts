@@ -50,3 +50,4 @@ export class PaymentsController {
 }
 
 export const paymentsController = new PaymentsController()
+

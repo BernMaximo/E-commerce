@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { addressesRoutes } from './modules/addresses/addresses.routes.js'
+import { adminRoutes } from './modules/admin/admin.routes.js'
 import { authRoutes } from './modules/auth/auth.routes.js'
 import { categoriesRoutes } from './modules/categories/categories.routes.js'
 import { ordersRoutes } from './modules/orders/orders.routes.js'
@@ -15,6 +16,7 @@ export async function appRoutes(app: FastifyInstance) {
 
   // Prefixo para as rotas da API
   app.register(authRoutes, { prefix: '/api/auth' })
+  app.register(adminRoutes, { prefix: '/api/admin' })
   app.register(addressesRoutes, { prefix: '/api/addresses' })
   app.register(categoriesRoutes, { prefix: '/api/categories' })
   app.register(productsRoutes, { prefix: '/api/products' })

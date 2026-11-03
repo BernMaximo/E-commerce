@@ -1,7 +1,12 @@
 import { Prisma } from '@prisma/client'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { prisma } from '../../lib/prisma.js'
-import { CreateProductInput, ListProductsQuery, UpdateProductInput } from './products.schemas.js'
+import {
+  CreateProductInput,
+  ListAllProductsQuery,
+  ListProductsQuery,
+  UpdateProductInput
+} from './products.schemas.js'
 
 function generateSlug(text: string): string {
   return text
@@ -43,6 +48,60 @@ export class ProductsController {
     let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: 'desc' }
     if (sort === 'price_asc') orderBy = { price: 'asc' }
     if (sort === 'price_desc') orderBy = { price: 'desc' }
+
+    const skip = (page - 1) * limit
+
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        where,
+        orderBy,
+        skip,
+        take: limit,
+        include: {
+          category: {
+            select: { id: true, name: true, slug: true }
+          }
+        }
+      }),
+      prisma.product.count({ where })
+    ])
+
+    return reply.status(200).send({
+      products,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
+    })
+  }
+
+  async listAll(request: FastifyRequest<{ Querystring: ListAllProductsQuery }>, reply: FastifyReply) {
+    const { search, categoryId, active, page, limit, sort } = request.query
+
+    const where: Prisma.ProductWhereInput = {}
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+        { slug: { contains: search, mode: 'insensitive' } }
+      ]
+    }
+
+    if (categoryId) {
+      where.categoryId = categoryId
+    }
+
+    if (active !== undefined) {
+      where.active = active === 'true'
+    }
+
+    let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: 'desc' }
+    if (sort === 'price_asc') orderBy = { price: 'asc' }
+    if (sort === 'price_desc') orderBy = { price: 'desc' }
+    if (sort === 'name_asc') orderBy = { name: 'asc' }
 
     const skip = (page - 1) * limit
 

@@ -19,6 +19,7 @@ export const updateOrderStatusSchema = z.object({
 
 export const listAllOrdersQuerySchema = z.object({
   status: z.enum(['PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELED']).optional(),
+  search: z.string().optional(),
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(50).default(15)
 })

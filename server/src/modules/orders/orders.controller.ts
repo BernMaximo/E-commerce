@@ -156,11 +156,19 @@ export class OrdersController {
   }
 
   async listAll(request: FastifyRequest<{ Querystring: ListAllOrdersQuery }>, reply: FastifyReply) {
-    const { status, page, limit } = request.query
+    const { status, search, page, limit } = request.query
 
     const where: Prisma.OrderWhereInput = {}
     if (status) {
       where.status = status
+    }
+
+    if (search) {
+      where.OR = [
+        { orderNumber: { contains: search, mode: 'insensitive' } },
+        { user: { name: { contains: search, mode: 'insensitive' } } },
+        { user: { email: { contains: search, mode: 'insensitive' } } }
+      ]
     }
 
     const skip = (page - 1) * limit

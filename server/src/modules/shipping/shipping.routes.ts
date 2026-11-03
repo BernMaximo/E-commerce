@@ -32,3 +32,4 @@ export async function shippingRoutes(app: FastifyInstance) {
     async (request, reply) => shippingController.calculate(request as any, reply)
   )
 }
+

@@ -52,3 +52,4 @@ export async function webhookRoutes(app: FastifyInstance) {
     paymentsController.handleWebhook
   )
 }
+

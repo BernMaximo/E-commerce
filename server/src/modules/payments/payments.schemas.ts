@@ -27,3 +27,4 @@ export const webhookQuerySchema = z.object({
 
 export type CardPaymentInput = z.infer<typeof cardPaymentBodySchema>
 export type WebhookQuery = z.infer<typeof webhookQuerySchema>
+

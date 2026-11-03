@@ -31,7 +31,10 @@ E-commerce/
 ├── server/                   # Backend API REST (Fastify + Prisma)
 ├── client/                   # Frontend Web (Next.js + Tailwind)
 ├── .gitignore
-└── README.md
+├── README.md
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+└── .env.example
 ```
 
 ---
@@ -72,17 +75,79 @@ erDiagram
   - [x] Gateway Mercado Pago: Geração de Pix dinâmico (QR Code e Copia e Cola) e Cartão de Crédito com tokenização.
   - [x] Webhooks Assíncronos: Endpoint com garantia de idempotência e cancelamento/estorno de estoque.
   - [x] Logística e Frete: Integração com ViaCEP e cálculo dinâmico de PAC e Sedex por peso e cubagem.
-- [ ] **Etapa 4: Desenvolvimento do Frontend**
-  - [ ] Catálogo com busca e filtros reativos.
-  - [ ] Carrinho de compras responsivo com persistência local.
-  - [ ] Checkout transparente com validação de campos em tempo real.
-  - [ ] Painel do cliente com histórico de pedidos.
-- [ ] **Etapa 5: Painel Administrativo (Backoffice)**
-  - [ ] Proteção de rotas administrativas via RBAC (`role = 'admin'`).
-  - [ ] Gestão de produtos (preços, estoque e imagens).
-  - [ ] Atualização de status e inserção de código de rastreamento.
-- [ ] **Etapa 6: Deploy e Documentação Final**
-  - [ ] Deploy da API e banco de dados em nuvem.
-  - [ ] Deploy do frontend na Vercel.
-  - [ ] Guia de execução local e credenciais de teste para recrutadores.
+- [x] **Etapa 4: Desenvolvimento do Frontend**
+  - [x] Catálogo com busca e filtros reativos.
+  - [x] Carrinho de compras responsivo com persistência local.
+  - [x] Checkout transparente com validação de campos em tempo real.
+  - [x] Painel do cliente com histórico de pedidos.
+- [x] **Etapa 5: Painel Administrativo (Backoffice)**
+  - [x] Proteção de rotas administrativas via RBAC (`role = 'admin'`).
+  - [x] Gestão de produtos (preços, estoque e imagens).
+  - [x] Atualização de status e inserção de código de rastreamento.
+- [x] **Etapa 6: Deploy e Documentação Final**
+  - [x] Guia de execução local e credenciais de teste para recrutadores.
 
+---
+
+## 📊 Status das Páginas Frontend
+
+| Página | Rota | Status |
+|--------|------|--------|
+| Home | `/` | ✅ |
+| Detalhes do Produto | `/product/[slug]` | ✅ |
+| Carrinho | `/cart` | ✅ |
+| Checkout | `/checkout` | ✅ |
+| Pagamento Pix | `/checkout/pix` | ✅ |
+| Pagamento Cartão | `/checkout/card` | ✅ |
+| Login | `/login` | ✅ |
+| Cadastro | `/register` | ✅ |
+| Meus Pedidos | `/orders` | ✅ |
+| Detalhes do Pedido | `/order/[id]` | ✅ |
+| Perfil do Usuário | `/profile` | ✅ |
+| Página de Categoria | `/category/[slug]` | ✅ |
+| Painel Admin (Dashboard) | `/admin` | ✅ |
+| Admin - Pedidos | `/admin/orders` | ✅ |
+| Admin - Produtos | `/admin/products` | ✅ |
+| Admin - Categorias | `/admin/categories` | ✅ |
+| Página de Sucesso | `/success` | ✅ |
+
+---
+
+## 🧪 Credenciais de Teste
+
+**Admin:**
+- Email: `admin@ecommerce.com`
+- Senha: `admin123`
+
+**Cliente:**
+- Email: `cliente@teste.com`
+- Senha: `cliente123`
+
+---
+
+## 🚀 Como Executar Localmente
+
+O projeto possui scripts prontos no `package.json`:
+
+```bash
+# Backend
+npm run dev      # Desenvolvimento (tsx watch)
+npm run build    # Compilar TypeScript
+npm run start    # Executar servidor
+
+# Frontend  
+npm run dev      # Next.js dev server
+
+# Banco
+npm run prisma:migrate  # Migrações
+npm run prisma:seed     # Dados iniciais
+```
+
+---
+
+## 📖 Documentação Adicional
+
+- [Arquitetura do Sistema](/docs/architecture/system-architecture.md) - Diagramas e fluxos
+- [Modelo de Dados](/docs/database/) - Schema e dicionário
+- [Fluxos de Usuário](/docs/architecture/user-flows.md) - Jornadas completas
+- [Client README](/client/README.md) - Guia do frontend
