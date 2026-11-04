@@ -3,15 +3,15 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { api } from '../../lib/api';
 import { useCart } from '../../context/CartContext';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import { useAuth } from '../../context/AuthContext';
 
 export default function CardCheckoutPage() {
   const router = useRouter();
   const { orderId } = router.query;
+  const { clearCart } = useCart();
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [paymentToken, setPaymentToken] = useState<string | null>(null);
 
   // Estados para os campos do cartão
   const [cardNumber, setCardNumber] = useState('');
@@ -20,13 +20,16 @@ export default function CardCheckoutPage() {
   const [cardCvc, setCardCvc] = useState('');
   const [installments, setInstallments] = useState(1);
 
-  const mockCardToken = 'mp-mock-token-12345';
-
   useEffect(() => {
+    if (!router.isReady || authLoading) return;
+    if (!user) {
+      router.push(`/login?redirect=/checkout/card?orderId=${orderId ?? ''}`);
+      return;
+    }
     if (!orderId) {
       router.push('/checkout');
     }
-  }, [orderId, router]);
+  }, [orderId, router, router.isReady, user, authLoading]);
 
   const handlePay = async () => {
     if (!orderId) return;
@@ -36,28 +39,36 @@ export default function CardCheckoutPage() {
 
     try {
       // Simulação de tokenização - em produção usaria o SDK do Mercado Pago
-      const response = await api(`/api/payments/orders/${orderId}/card`, {
-        method: 'POST',
-        body: JSON.stringify({
-          token: `mock-card-token-${Date.now()}`,
-          installments,
-          paymentMethodId: 'visa',
-          issuerId: 'default',
-          payer: {
-            email: 'test@test.com',
-            first_name: 'Teste',
-            last_name: 'Usuario'
-          }
-        }),
-      });
+      const response = await api<{ status: string; paymentStatus: string }>(
+        `/api/payments/orders/${orderId}/card`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            token: `mock-card-token-${Date.now()}`,
+            installments,
+            paymentMethodId: 'visa',
+            issuerId: 'default',
+            payer: {
+              email: 'cliente@teste.com',
+              first_name: cardName.split(' ')[0] || 'Cliente',
+              last_name: cardName.split(' ').slice(1).join(' ') || 'TechStore',
+              identification: {
+                type: 'CPF',
+                number: '12345678909'
+              }
+            }
+          }),
+        }
+      );
 
       if (response.status === 'PAID' || response.paymentStatus === 'APPROVED') {
+        clearCart();
         router.push(`/order/${orderId}`);
       } else {
         setError('Pagamento não foi aprovado');
       }
-    } catch (err: any) {
-      setError(err.message || 'Erro ao processar pagamento');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao processar pagamento');
     } finally {
       setLoading(false);
     }
@@ -74,7 +85,6 @@ export default function CardCheckoutPage() {
       </Head>
 
       <div className="min-h-screen flex flex-col">
-        <Header />
         <main className="flex-1 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="bg-white rounded-lg shadow-sm">
             <div className="p-6 border-b border-gray-200">
@@ -186,12 +196,11 @@ export default function CardCheckoutPage() {
               </div>
 
               <div className="mt-4 text-xs text-gray-500 text-center">
-                <p>Este formulário é um exemplo de simulação. Em produção, o pagamento seria processado com tokenização segura.</p>
+                <p>Ambiente de demonstração: o pagamento é simulado e aprovado automaticamente.</p>
               </div>
             </div>
           </div>
         </main>
-        <Footer />
       </div>
     </>
   );

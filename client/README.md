@@ -1,155 +1,126 @@
-# TechStore - Frontend
+# TechStore — Frontend
 
-Uma plataforma de e-commerce moderna desenvolvida com Next.js 16, React e Tailwind CSS.
+Frontend da plataforma **TechStore**, construído com **Next.js 16 (Pages Router)**, **React 19**, **TypeScript** e **Tailwind CSS 4**.
 
-## 🚀 Tecnologias
+A aplicação consome a API REST em [`../server`](../server) e cobre o fluxo completo da loja e do painel administrativo.
 
-- **Next.js 16** (App Router)
-- **React 19**
-- **TypeScript**
-- **Tailwind CSS 4**
-- **Lucide Icons**
+> Documentação completa do projeto (arquitetura, DER, deploy e credenciais): **[README principal](../README.md)**.
 
-## 📁 Estrutura de Arquivos
+---
 
-```
-client/
-├── pages/              # Rotas da aplicação
-│   ├── index.tsx       # Página inicial - Catálogo de produtos
-│   ├── login.tsx       # Tela de login
-│   ├── register.tsx    # Tela de cadastro
-│   ├── cart.tsx        # Carrinho de compras
-│   ├── checkout.tsx    # Checkout
-│   ├── checkout/pix.tsx      # Pagamento Pix
-│   ├── checkout/card.tsx     # Pagamento Cartão
-│   ├── orders.tsx      # Meus pedidos
-│   ├── order/[id].tsx  # Detalhes do pedido
-│   ├── profile.tsx     # Perfil do usuário
-│   ├── category/[slug].tsx  # Página de categoria
-│   ├── admin/index.tsx # Painel administrativo
-│   ├── success.tsx     # Página de sucesso
-│   ├── 404.tsx         # Página 404
-│   └── 500.tsx         # Página 500
-├── components/         # Componentes React
-│   ├── Header.tsx      # Cabeçalho com navegação
-│   ├── Footer.tsx      # Rodapé
-│   ├── ProductCard.tsx # Card de produto
-│   ├── ProductList.tsx # Lista de produtos
-│   └── LoadingSpinner.tsx # Spinner de carregamento
-├── context/            # Contextos globais
-│   ├── AuthContext.tsx # Contexto de autenticação
-│   └── CartContext.tsx # Contexto do carrinho
-├── lib/                # Utilitários
-│   └── api.ts          # Cliente API centralizado
-├── types/              # Tipagens TypeScript
-│   └── index.ts        # Tipos compartilhados
-└── styles/             
-    └── globals.css     # Estilos globais
-```
+## Requisitos
 
-## 🚀 Como Executar
+- Node.js 20+ e npm
+- API rodando em `http://localhost:3333` (veja [`../server`](../server))
 
-### Requisitos
-- Node.js 18+ 
-- npm/yarn/pnpm
+## Como rodar
 
-### Configuração
-
-1. Clone o repositório:
 ```bash
-git clone <url-do-repositorio>
-cd E-commerce/client
-```
-
-2. Instale as dependências:
-```bash
+cd client
 npm install
-# ou
-yarn install
-# ou
-pnpm install
+
+cp .env.example .env.local      # Windows: copy .env.example .env.local
+# Edite NEXT_PUBLIC_API_URL se a API não estiver em localhost:3333
+
+npm run dev                     # http://localhost:3000
 ```
 
-3. Configure as variáveis de ambiente:
-```bash
-cp .env.local - ../.env.example
-# Edite NEXT_PUBLIC_API_URL com a URL do seu backend
+### Variáveis de ambiente
+
+| Variável | Obrigatória | Descrição |
+| :--- | :---: | :--- |
+| `NEXT_PUBLIC_API_URL` | **sim** | URL pública da API Fastify (ex.: `http://localhost:3333`). |
+
+## Scripts
+
+| Comando | Descrição |
+| :--- | :--- |
+| `npm run dev` | Servidor de desenvolvimento (Turbopack). |
+| `npm run build` | Build de produção. |
+| `npm start` | Servidor de produção (após o build). |
+| `npm run lint` | ESLint 9 (`eslint-config-next`). |
+| `npx tsc --noEmit` | Verificação de tipos. |
+
+## Estrutura
+
+```text
+client/
+├── components/          # Header, Footer, ProductCard/List, componentes do admin
+├── context/             # AuthContext e CartContext (estado global + localStorage)
+├── lib/                 # Cliente HTTP (api.ts), formatadores e labels
+├── pages/               # Rotas — Pages Router
+│   ├── index.tsx        # Catálogo com busca, filtros e ordenação
+│   ├── product/[slug].tsx
+│   ├── category/[slug].tsx
+│   ├── cart.tsx
+│   ├── checkout.tsx
+│   ├── checkout/pix.tsx
+│   ├── checkout/card.tsx
+│   ├── orders.tsx
+│   ├── order/[id].tsx
+│   ├── profile.tsx
+│   ├── login.tsx / register.tsx
+│   ├── admin/           # Dashboard, pedidos, produtos e categorias
+│   └── api/health.ts    # Health check do frontend
+├── styles/globals.css   # Tailwind CSS 4
+├── types/index.ts       # Tipos compartilhados
+├── next.config.ts       # Domínios de imagem e turbopack root
+└── vercel.json          # Configuração de deploy
 ```
 
-4. Inicie o servidor de desenvolvimento:
-```bash
-npm run dev
-```
+## Funcionalidades
 
-Acesse em [http://localhost:3000](http://localhost:3000)
+### Cliente
 
-### Scripts disponíveis
+- Catálogo com busca, filtro por categoria/faixa de preço, ordenação e paginação.
+- Página de produto com imagem 1:1 e controle de quantidade.
+- Carrinho persistido em `localStorage`.
+- Cadastro/login com JWT (access + refresh) e renovação automática no `api.ts`.
+- Perfil com dados da conta e CRUD de endereços.
+- Checkout com ViaCEP, cotação PAC/SEDEX e resumo de valores.
+- Histórico e detalhes de pedidos com status, pagamento e rastreio.
+- Pix com QR Code, copia-e-cola e polling até a confirmação.
+- Cartão em modo demonstração (aprovação automática).
 
-- `npm run dev` - Desenvolvimento
-- `npm run build` - Build para produção
-- `npm run start` - Servidor de produção
-- `npm run lint` - Linter ESLint
+### Administrador
 
-## 🔧 Configuração da API
+- Dashboard com receita, pedidos por status, ticket médio, estoque e gráfico de 7 dias.
+- CRUD de produtos com ativação/desativação e soft delete.
+- Cadastro e listagem de categorias.
+- Listagem de todos os pedidos com filtros e paginação.
+- Atualização de status (`SHIPPED`, `DELIVERED`, `CANCELED`) e código de rastreio.
 
-O cliente se comunica com o backend através de `lib/api.ts`. 
+## Integração com a API
 
-Configure a URL da API no arquivo `.env.local`:
-```
-NEXT_PUBLIC_API_URL=http://localhost:3333
-```
+O wrapper em [`lib/api.ts`](lib/api.ts):
 
-## 🛒 Funcionalidades
+- prefixa `NEXT_PUBLIC_API_URL`;
+- adiciona `Authorization: Bearer <token>` quando há sessão;
+- envia `Content-Type: application/json` apenas quando existe corpo;
+- em `401`, renova o access token com o refresh token e repete a requisição uma vez.
 
-### Para o Cliente
-- ✅ Catálogo de produtos com busca e filtros
-- ✅ Detalhes do produto
-- ✅ Carrinho de compras com persistência local
-- ✅ Checkout com Pix e Cartão de Crédito
-- ✅ Histórico de pedidos
-- ✅ Perfil do usuário
-- ✅ Autenticação com JWT
+## Credenciais de teste
 
-### Para o Administrador
-- ✅ Painel de administração
-- ✅ Visão de todos os pedidos
-- ✅ Atualização de status de pedidos
+Criadas pelo seed da API (`cd ../server && npm run prisma:seed`):
 
-## 🎨 Estilização
+| Perfil | E-mail | Senha |
+| :--- | :--- | :--- |
+| Administrador | `admin@ecommerce.com` | `admin123` |
+| Cliente | `cliente@teste.com` | `cliente123` |
 
-O projeto utiliza Tailwind CSS com um design limpo e moderno:
-- Layout responsivo
-- Tema indigo/violeta
-- Estados de foco acessíveis
-- Transições suaves
+## Deploy
 
-## 📚 API Reference
+O frontend está preparado para a **Vercel** com [`vercel.json`](vercel.json):
 
-- `GET /api/products` - Listar produtos (filtros: categoryId, search)
-- `GET /api/products/:slug` - Detalhes do produto
-- `GET /api/categories` - Listar categorias
-- `POST /api/auth/login` - Login
-- `POST /api/auth/register` - Registro
-- `GET /api/addresses` - Listar endereços
-- `POST /api/addresses` - Criar endereço
-- `POST /api/orders` - Criar pedido
-- `GET /api/orders/my` - Meus pedidos
-- `GET /api/orders/:id` - Detalhes do pedido
+1. Importe o repositório na Vercel.
+2. Configure **Root Directory = `client`**.
+3. Defina `NEXT_PUBLIC_API_URL` com a URL pública da API.
+4. Faça o deploy (a Vercel detecta Next.js automaticamente).
 
-## 🧪 Credenciais de Teste
+Alternativa Netlify: base `client`, build `npm run build`, plugin `@netlify/plugin-nextjs` e a mesma variável de ambiente.
 
-**Admin:**
-- Email: `admin@ecommerce.com`
-- Senha: `admin123`
+## Limitações
 
-**Cliente:**
-- Email: `cliente@teste.com`
-- Senha: `cliente123`
-
-## 🚀 Deploy
-
-O frontend pode ser deployado em Vercel com um clique:
-
-[![Vercel](https://vercel.com/button)](https://vercel.com)
-
-O deploy automático detecta automaticamente a URL correta do backend.
+- A tokenização de cartão é **simulada**; o modo real exige o SDK/Checkout Bricks do Mercado Pago.
+- O frete é calculado por regras internas (simulado), não por transportadora real.
+- O refresh token é armazenado em `localStorage` (o ideal seria cookie `HttpOnly`).

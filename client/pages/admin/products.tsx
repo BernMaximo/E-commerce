@@ -294,7 +294,7 @@ export default function AdminProductsPage() {
                         src={product.imageUrl}
                         alt={product.name}
                         loading="lazy"
-                        className={`h-full w-full object-cover ${product.active === false ? 'opacity-50 grayscale' : ''}`}
+                        className={`absolute inset-0 h-full w-full object-cover ${product.active === false ? 'opacity-50 grayscale' : ''}`}
                       />
                       <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
                         <span

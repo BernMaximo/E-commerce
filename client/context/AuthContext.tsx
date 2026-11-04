@@ -21,6 +21,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const storedToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     if (storedToken) {
+      // Hidratação: o token só existe no cliente, por isso a leitura ocorre no efeito.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setToken(storedToken);
       api<{ user: User }>('/api/auth/me')
         .then((res) => {
@@ -43,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const data = await api<{ user: User; token: string }>('/api/auth/login', {
+    const data = await api<{ user: User; token: string; refreshToken?: string }>('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
@@ -54,11 +56,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(data.user);
     }
 
+    if (data.refreshToken) {
+      localStorage.setItem('refreshToken', data.refreshToken);
+    }
+
     return data.user;
   };
 
   const register = async (name: string, email: string, password: string) => {
-    const data = await api<{ user: User; token: string }>('/api/auth/register', {
+    const data = await api<{ user: User; token: string; refreshToken?: string }>('/api/auth/register', {
       method: 'POST',
       body: JSON.stringify({ name, email, password }),
     });
@@ -67,6 +73,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('token', data.token);
       setToken(data.token);
       setUser(data.user);
+    }
+
+    if (data.refreshToken) {
+      localStorage.setItem('refreshToken', data.refreshToken);
     }
 
     return data.user;

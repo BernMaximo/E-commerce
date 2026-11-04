@@ -3,9 +3,8 @@ import Head from 'next/head';
 import { Order } from '../types';
 import { api } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import Link from 'next/link';
+import { getOrderStatusLabel, getOrderStatusStyle } from '../lib/admin';
 
 export default function OrdersPage() {
   const { user } = useAuth();
@@ -21,8 +20,8 @@ export default function OrdersPage() {
       try {
         const response = await api<{ orders: Order[] }>('/api/orders/my');
         setOrders(response.orders || []);
-      } catch (err: any) {
-        setError(err.message || 'Erro ao carregar pedidos');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Erro ao carregar pedidos');
       } finally {
         setLoading(false);
       }
@@ -38,28 +37,6 @@ export default function OrdersPage() {
     }).format(typeof price === 'string' ? parseFloat(price) : price);
   };
 
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      paid: 'bg-green-100 text-green-800',
-      shipped: 'bg-blue-100 text-blue-800',
-      delivered: 'bg-purple-100 text-purple-800',
-      canceled: 'bg-red-100 text-red-800',
-    };
-    return colors[status] || 'bg-gray-100 text-gray-800';
-  };
-
-  const getStatusLabel = (status: string) => {
-    const labels: Record<string, string> = {
-      pending: 'Pendente',
-      paid: 'Pago',
-      shipped: 'Enviado',
-      delivered: 'Entregue',
-      canceled: 'Cancelado',
-    };
-    return labels[status] || status;
-  };
-
   if (!user) {
     return null;
   }
@@ -71,7 +48,6 @@ export default function OrdersPage() {
       </Head>
 
       <div className="min-h-screen flex flex-col">
-        <Header />
         <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">Meus Pedidos</h1>
 
@@ -102,8 +78,8 @@ export default function OrdersPage() {
                         Enviado em: {new Date(order.createdAt).toLocaleDateString('pt-BR')}
                       </p>
                     </div>
-                    <span className={`px-3 py-1 text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>
-                      {getStatusLabel(order.status)}
+                    <span className={`px-3 py-1 text-xs font-medium rounded-full ring-1 ring-inset ${getOrderStatusStyle(order.status)}`}>
+                      {getOrderStatusLabel(order.status)}
                     </span>
                   </div>
 
@@ -158,7 +134,6 @@ export default function OrdersPage() {
             </div>
           )}
         </main>
-        <Footer />
       </div>
     </>
   );

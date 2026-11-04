@@ -11,7 +11,6 @@ interface ProductListProps {
 
 export default function ProductList({ categorySlug, searchQuery }: ProductListProps) {
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,8 +19,7 @@ export default function ProductList({ categorySlug, searchQuery }: ProductListPr
     const fetchCategories = async () => {
       try {
         const response = await api<{ categories: Category[] }>('/api/categories');
-        setCategories(response.categories || []);
-        
+
         if (categorySlug) {
           const cat = response.categories?.find(c => c.slug === categorySlug);
           if (cat) setSelectedCategory(cat.slug);
@@ -43,8 +41,8 @@ export default function ProductList({ categorySlug, searchQuery }: ProductListPr
         
         const response = await api<{ products: Product[] }>(`/api/products?${params.toString()}`);
         setProducts(response.products || []);
-      } catch (err: any) {
-        setError(err.message || 'Erro ao carregar produtos');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Erro ao carregar produtos');
       } finally {
         setLoading(false);
       }

@@ -23,8 +23,8 @@ export default function Home() {
         
         const response = await api<{ products: Product[] }>(`/api/products?${params.toString()}`);
         setProducts(response.products || []);
-      } catch (err: any) {
-        setError(err.message || 'Erro ao carregar produtos');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Erro ao carregar produtos');
       } finally {
         setLoading(false);
       }

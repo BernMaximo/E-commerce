@@ -10,10 +10,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       backend: data,
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
+  } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: error.message || 'Não foi possível conectar ao backend'
+      message: error instanceof Error ? error.message : 'Não foi possível conectar ao backend'
     });
   }
 }

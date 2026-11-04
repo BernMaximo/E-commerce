@@ -21,8 +21,8 @@ export default function LoginPage() {
       const loggedUser = await login(email, password);
       const redirect = (router.query.redirect as string) || (loggedUser.role === 'ADMIN' ? '/admin' : '/');
       router.push(redirect);
-    } catch (err: any) {
-      setError(err.message || 'Falha ao autenticar. Verifique seus dados.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Falha ao autenticar. Verifique seus dados.');
     } finally {
       setLoading(false);
     }

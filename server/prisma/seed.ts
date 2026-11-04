@@ -33,21 +33,25 @@ async function main() {
     }
   })
 
-  // Endereço padrão para o cliente de teste
-  await prisma.address.create({
-    data: {
-      userId: client.id,
-      recipientName: 'Cliente Demonstração',
-      zipcode: '01001-000',
-      street: 'Praça da Sé',
-      number: '100',
-      complement: 'Apto 42',
-      neighborhood: 'Sé',
-      city: 'São Paulo',
-      state: 'SP',
-      isDefault: true
-    }
-  })
+  // Endereço padrão para o cliente de teste (idempotente: só cria se ainda não houver)
+  const existingAddress = await prisma.address.findFirst({ where: { userId: client.id } })
+
+  if (!existingAddress) {
+    await prisma.address.create({
+      data: {
+        userId: client.id,
+        recipientName: 'Cliente Demonstração',
+        zipcode: '01001-000',
+        street: 'Praça da Sé',
+        number: '100',
+        complement: 'Apto 42',
+        neighborhood: 'Sé',
+        city: 'São Paulo',
+        state: 'SP',
+        isDefault: true
+      }
+    })
+  }
   console.log('✅ Usuário Cliente e Endereço garantidos:', client.email)
 
   // 3. Criar Categorias

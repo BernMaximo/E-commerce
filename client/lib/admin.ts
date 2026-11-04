@@ -35,6 +35,17 @@ export function getOrderStatusStyle(status: string): string {
   );
 }
 
+export const PAYMENT_STATUS_LABELS: Record<string, string> = {
+  PENDING: 'Pendente',
+  APPROVED: 'Aprovado',
+  REJECTED: 'Recusado',
+  REFUNDED: 'Estornado'
+};
+
+export function getPaymentStatusLabel(status: string): string {
+  return PAYMENT_STATUS_LABELS[status] || status;
+}
+
 export function getStockBadge(stock: number, active = true) {
   if (!active) {
     return {

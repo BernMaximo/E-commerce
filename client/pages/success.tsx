@@ -1,23 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import Link from 'next/link';
 import { api } from '../lib/api';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
-import Header from '../components/Header';
-
-interface SuccessProps {
-  orderId: string;
-  status: 'paid' | 'pending' | 'failed';
-}
+import type { Order } from '../types';
 
 export default function SuccessPage() {
   const router = useRouter();
-  const { orderId, status } = router.query as { orderId?: string; status?: string };
+  const { orderId } = router.query as { orderId?: string };
   const { clearCart } = useCart();
-  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [order, setOrder] = useState<any>(null);
+  const [order, setOrder] = useState<Order | null>(null);
 
   useEffect(() => {
     if (!orderId) {
@@ -27,7 +21,7 @@ export default function SuccessPage() {
 
     const fetchOrder = async () => {
       try {
-        const response = await api(`/api/orders/${orderId}`);
+        const response = await api<{ order: Order }>(`/api/orders/${orderId}`);
         setOrder(response.order);
         if (response.order?.status === 'PAID') {
           clearCart();
@@ -72,7 +66,6 @@ export default function SuccessPage() {
       </Head>
 
       <div className="min-h-screen flex flex-col">
-        <Header />
         <main className="flex-1 max-w-md mx-auto px-4 py-12 text-center">
           <div className="bg-white rounded-lg shadow-sm p-8">
             {order.status === 'PAID' ? (
@@ -110,12 +103,12 @@ export default function SuccessPage() {
           </div>
 
           <div className="mt-6">
-            <a
+            <Link
               href="/"
               className="inline-block px-6 py-3 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
             >
               Continuar Comprando
-            </a>
+            </Link>
           </div>
         </main>
       </div>

@@ -16,9 +16,9 @@ export default function App({ Component, pageProps }: AppProps) {
         </Head>
         <div className="flex flex-col min-h-screen bg-gray-50 text-gray-900">
           <Header />
-          <main className="flex-grow">
+          <div className="flex-grow">
             <Component {...pageProps} />
-          </main>
+          </div>
           <Footer />
         </div>
       </CartProvider>

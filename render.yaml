@@ -1,0 +1,29 @@
+# Blueprint de deploy da API no Render.
+# 1. Suba o repositório no GitHub.
+# 2. No Render, clique em "New > Blueprint" e selecione o repositório.
+# 3. Informe DATABASE_URL (Neon/Supabase/Render Postgres) e, se quiser,
+#    MERCADOPAGO_ACCESS_TOKEN. O JWT_SECRET é gerado automaticamente.
+# 4. Depois do primeiro deploy, rode o seed uma vez no Shell do serviço:
+#      npm run prisma:seed
+services:
+  - type: web
+    name: ecommerce-api
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: server
+    buildCommand: npm ci --include=dev && npm run prisma:generate && npm run prisma:push && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 20.11.0
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MERCADOPAGO_ACCESS_TOKEN
+        sync: false

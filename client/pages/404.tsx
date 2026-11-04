@@ -1,7 +1,5 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 export default function NotFoundPage() {
   return (
@@ -11,7 +9,6 @@ export default function NotFoundPage() {
       </Head>
 
       <div className="min-h-screen flex flex-col">
-        <Header />
         <main className="flex-1 max-w-md mx-auto px-4 py-12 text-center">
           <div className="space-y-4">
             <h1 className="text-6xl font-bold text-gray-200">404</h1>
@@ -29,7 +26,6 @@ export default function NotFoundPage() {
             </Link>
           </div>
         </main>
-        <Footer />
       </div>
     </>
   );

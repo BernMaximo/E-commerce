@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { User, Address } from '../types';
+import { Address } from '../types';
 import { api } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -21,8 +19,8 @@ export default function ProfilePage() {
       try {
         const response = await api<{ addresses: Address[] }>('/api/addresses');
         setAddresses(response.addresses || []);
-      } catch (err: any) {
-        setError(err.message || 'Erro ao carregar endereços');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Erro ao carregar endereços');
       } finally {
         setLoading(false);
       }
@@ -42,7 +40,6 @@ export default function ProfilePage() {
       </Head>
 
       <div className="min-h-screen flex flex-col">
-        <Header />
         <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h1 className="text-3xl font-bold text-gray-900">Minha Conta</h1>
@@ -81,7 +78,9 @@ export default function ProfilePage() {
               <div>
                 <p className="text-sm text-gray-500">Membro desde</p>
                 <p className="font-medium text-gray-900">
-                  {new Date(user.id).toLocaleDateString('pt-BR')}
+                  {user.createdAt
+                    ? new Date(user.createdAt).toLocaleDateString('pt-BR')
+                    : '—'}
                 </p>
               </div>
             </div>
@@ -131,7 +130,6 @@ export default function ProfilePage() {
             )}
           </div>
         </main>
-        <Footer />
       </div>
     </>
   );

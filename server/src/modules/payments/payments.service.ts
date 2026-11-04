@@ -146,6 +146,10 @@ export class PaymentsService {
       throw new Error('Este pedido já foi pago.')
     }
 
+    if (order.status === 'CANCELED') {
+      throw new Error('Este pedido foi cancelado e não pode receber pagamentos.')
+    }
+
     let isApproved = true
     let transactionId = `CARD-${Date.now()}`
     let rawResponse: any = { simulated: true }
@@ -337,13 +341,15 @@ export class PaymentsService {
             })
           }
 
-          await tx.payment.update({
-            where: { orderId: order.id },
-            data: {
-              status: 'REJECTED',
-              transactionId: String(paymentId)
-            }
-          })
+          if (order.payment) {
+            await tx.payment.update({
+              where: { orderId: order.id },
+              data: {
+                status: 'REJECTED',
+                transactionId: String(paymentId)
+              }
+            })
+          }
 
           await tx.order.update({
             where: { id: order.id },

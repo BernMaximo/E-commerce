@@ -4,8 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 export default function CartPage() {
   const router = useRouter();
@@ -38,7 +36,6 @@ export default function CartPage() {
       </Head>
 
       <div className="min-h-screen flex flex-col">
-        <Header />
         <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">Carrinho de Compras</h1>
 
@@ -169,7 +166,6 @@ export default function CartPage() {
             </div>
           )}
         </main>
-        <Footer />
       </div>
     </>
   );

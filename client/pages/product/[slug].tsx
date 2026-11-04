@@ -5,8 +5,6 @@ import Image from 'next/image';
 import { Product } from '../../types';
 import { api } from '../../lib/api';
 import { useCart } from '../../context/CartContext';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 import Link from 'next/link';
 
 export default function ProductDetail() {
@@ -26,8 +24,8 @@ export default function ProductDetail() {
         try {
           const response = await api<{ product: Product }>(`/api/products/${slug}`);
           setProduct(response.product);
-        } catch (err: any) {
-          setError(err.message || 'Produto não encontrado');
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Produto não encontrado');
         } finally {
           setLoading(false);
         }
@@ -60,7 +58,6 @@ export default function ProductDetail() {
       </Head>
       
       <div className="min-h-screen flex flex-col">
-        <Header />
         <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {loading ? (
             <div className="grid md:grid-cols-2 gap-8">
@@ -185,7 +182,6 @@ export default function ProductDetail() {
             </div>
           ) : null}
         </main>
-        <Footer />
       </div>
     </>
   );

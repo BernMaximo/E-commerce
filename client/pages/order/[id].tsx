@@ -3,8 +3,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { Order } from '../../types';
 import { api } from '../../lib/api';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import { getOrderStatusLabel, getOrderStatusStyle, getPaymentStatusLabel } from '../../lib/admin';
 
 export default function OrderDetailPage() {
   const router = useRouter();
@@ -21,8 +20,8 @@ export default function OrderDetailPage() {
         try {
           const response = await api<{ order: Order }>(`/api/orders/${id}`);
           setOrder(response.order);
-        } catch (err: any) {
-          setError(err.message || 'Pedido não encontrado');
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Pedido não encontrado');
         } finally {
           setLoading(false);
         }
@@ -38,28 +37,6 @@ export default function OrderDetailPage() {
     }).format(typeof price === 'string' ? parseFloat(price) : price);
   };
 
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      paid: 'bg-green-100 text-green-800',
-      shipped: 'bg-blue-100 text-blue-800',
-      delivered: 'bg-purple-100 text-purple-800',
-      canceled: 'bg-red-100 text-red-800',
-    };
-    return colors[status] || 'bg-gray-100 text-gray-800';
-  };
-
-  const getStatusLabel = (status: string) => {
-    const labels: Record<string, string> = {
-      pending: 'Pendente',
-      paid: 'Pago',
-      shipped: 'Enviado',
-      delivered: 'Entregue',
-      canceled: 'Cancelado',
-    };
-    return labels[status] || status;
-  };
-
   if (!id) {
     return null;
   }
@@ -71,7 +48,6 @@ export default function OrderDetailPage() {
       </Head>
 
       <div className="min-h-screen flex flex-col">
-        <Header />
         <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {loading ? (
             <div className="bg-white rounded-lg shadow-sm p-6">
@@ -92,8 +68,8 @@ export default function OrderDetailPage() {
                   <h1 className="text-2xl font-bold text-gray-900">
                     Pedido #{order.orderNumber}
                   </h1>
-                  <span className={`px-3 py-1 text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>
-                    {getStatusLabel(order.status)}
+                  <span className={`px-3 py-1 text-xs font-medium rounded-full ring-1 ring-inset ${getOrderStatusStyle(order.status)}`}>
+                    {getOrderStatusLabel(order.status)}
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 mt-1">
@@ -147,7 +123,7 @@ export default function OrderDetailPage() {
                     <div className="p-4 bg-gray-50 rounded-lg">
                       <p className="text-gray-900">{order.payment.paymentMethod === 'PIX' ? 'Pix' : 'Cartão de Crédito'}</p>
                       <p className="text-sm text-gray-600">
-                        Status: {getStatusLabel(order.payment.status)}
+                        Status: {getPaymentStatusLabel(order.payment.status)}
                       </p>
                       {order.payment.qrCodePix && (
                         <div className="mt-2">
@@ -174,7 +150,6 @@ export default function OrderDetailPage() {
             </div>
           ) : null}
         </main>
-        <Footer />
       </div>
     </>
   );

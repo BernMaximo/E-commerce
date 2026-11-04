@@ -23,6 +23,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       const stored = localStorage.getItem('ecommerce_cart');
       if (stored) {
+        // Hidratação: o carrinho só existe no cliente, por isso a leitura ocorre no efeito.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setItems(JSON.parse(stored));
       }
     } catch (e) {

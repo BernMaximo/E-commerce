@@ -2,11 +2,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image';
-import { api } from '../../lib/api';
+import { api, getErrorMessage } from '../../lib/api';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 
 interface PixPaymentData {
   qrCodePix: string;
@@ -18,7 +16,7 @@ interface PixPaymentData {
 export default function PixCheckoutPage() {
   const router = useRouter();
   const { orderId } = router.query;
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { clearCart } = useCart();
   const [pixData, setPixData] = useState<PixPaymentData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -26,6 +24,13 @@ export default function PixCheckoutPage() {
   const [countdown, setCountdown] = useState(300); // 5 minutos
 
   useEffect(() => {
+    if (!router.isReady || authLoading) return;
+
+    if (!user) {
+      router.push(`/login?redirect=/checkout/pix?orderId=${orderId ?? ''}`);
+      return;
+    }
+
     if (!orderId) {
       router.push('/checkout');
       return;
@@ -35,21 +40,12 @@ export default function PixCheckoutPage() {
     const fetchPixData = async () => {
       setLoading(true);
       try {
-        // Primeiro tenta gerar o Pix
-        const response = await api(`/api/payments/orders/${orderId}/pix`);
+        const response = await api<PixPaymentData>(`/api/payments/orders/${orderId}/pix`, {
+          method: 'POST',
+        });
         setPixData(response);
-      } catch (err: any) {
-        // Se já existir, tenta buscar os dados existentes
-        try {
-          const existingData = await api(`/api/payments/${orderId}`);
-          if (existingData) {
-            setPixData(existingData);
-          } else {
-            setError('Dados do pagamento não encontrados');
-          }
-        } catch {
-          setError('Erro ao buscar dados do pagamento');
-        }
+      } catch (err) {
+        setError(getErrorMessage(err, 'Erro ao gerar os dados do pagamento'));
       } finally {
         setLoading(false);
       }
@@ -69,26 +65,26 @@ export default function PixCheckoutPage() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [orderId, router]);
+  }, [orderId, router, router.isReady, user, authLoading]);
 
   useEffect(() => {
     // Verificar se o pagamento foi aprovado periodicamente
-    if (!orderId) return;
+    if (!orderId || !user) return;
 
     const checkPayment = setInterval(async () => {
       try {
-        const response = await api(`/api/orders/${orderId}`);
-        if (response.order?.status === 'PAID' || response?.status === 'approved') {
+        const response = await api<{ order: { status: string } }>(`/api/orders/${orderId}`);
+        if (response.order?.status === 'PAID') {
           clearCart();
           router.push(`/order/${orderId}`);
         }
-      } catch (err) {
-        // ignore
+      } catch {
+        // Ignora falhas transitórias de polling.
       }
     }, 3000);
 
     return () => clearInterval(checkPayment);
-  }, [orderId, router, clearCart]);
+  }, [orderId, router, clearCart, user]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -107,7 +103,6 @@ export default function PixCheckoutPage() {
       </Head>
 
       <div className="min-h-screen flex flex-col">
-        <Header />
         <main className="flex-1 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="bg-white rounded-lg shadow-sm p-6">
             <h1 className="text-2xl font-bold text-gray-900 mb-6">
@@ -169,8 +164,8 @@ export default function PixCheckoutPage() {
 
                 <div className="border-t border-gray-200 pt-4">
                   <p className="text-sm text-gray-500">
-                    Após o pagamento ser confirmado, seu pedido será atualizado automaticamente.
-                    Você também receberá uma notificação por e-mail.
+                    Após o pagamento ser confirmado, esta página atualiza automaticamente e
+                    redireciona para os detalhes do pedido.
                   </p>
                 </div>
 
@@ -192,7 +187,6 @@ export default function PixCheckoutPage() {
             ) : null}
           </div>
         </main>
-        <Footer />
       </div>
     </>
   );

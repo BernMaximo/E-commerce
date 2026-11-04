@@ -3,6 +3,7 @@ export type User = {
   name: string;
   email: string;
   role: 'CLIENT' | 'ADMIN';
+  createdAt?: string;
 };
 
 export type Category = {

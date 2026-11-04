@@ -33,8 +33,8 @@ export default function RegisterPage() {
     try {
       await register(name, email, password);
       router.push('/');
-    } catch (err: any) {
-      setError(err.message || 'Falha ao registrar conta. Verifique os dados.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Falha ao registrar conta. Verifique os dados.');
     } finally {
       setLoading(false);
     }

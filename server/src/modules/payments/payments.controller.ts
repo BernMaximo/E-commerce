@@ -36,15 +36,16 @@ export class PaymentsController {
       const query = (request.query as any) || {}
       const notification = { ...body, ...query }
 
-      // Responde HTTP 200 OK imediatamente para o Mercado Pago não reenviar
-      reply.status(200).send({ received: true })
-
-      // Processa a notificação assincronamente
       await paymentsService.processWebhook(notification)
+
+      // Sempre responde 200 para o Mercado Pago não reenviar notificações já tratadas
+      return reply.status(200).send({ received: true })
     } catch (err) {
       console.error('Erro ao processar webhook Mercado Pago:', err)
       // Mesmo com erro interno, responde 200 para evitar loops infinitos do webhook
-      return reply.status(200).send({ received: true, error: true })
+      if (!reply.sent) {
+        return reply.status(200).send({ received: true, error: true })
+      }
     }
   }
 }

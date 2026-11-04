@@ -4,8 +4,6 @@ import Head from 'next/head';
 import { Product, Category } from '../../types';
 import { api } from '../../lib/api';
 import ProductCard from '../../components/ProductCard';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 
 export default function CategoryPage() {
   const router = useRouter();
@@ -32,8 +30,8 @@ export default function CategoryPage() {
           const categories = await api<{ categories: Category[] }>('/api/categories');
           const cat = categories.categories?.find(c => c.slug === slug);
           setCategory(cat || null);
-        } catch (err: any) {
-          setError(err.message || 'Erro ao carregar produtos');
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Erro ao carregar produtos');
         } finally {
           setLoading(false);
         }
@@ -55,7 +53,6 @@ export default function CategoryPage() {
       </Head>
 
       <div className="min-h-screen flex flex-col">
-        <Header />
         <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">
             {category ? category.name : 'Categoria'}
@@ -87,7 +84,6 @@ export default function CategoryPage() {
             </div>
           )}
         </main>
-        <Footer />
       </div>
     </>
   );
