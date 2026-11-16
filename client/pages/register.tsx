@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
+import { COMPANY_CONFIG } from '../lib/companyConfig';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -43,19 +44,19 @@ export default function RegisterPage() {
   return (
     <>
       <Head>
-        <title>Criar Conta - TechStore</title>
+        <title>{`Criar Conta - ${COMPANY_CONFIG.name}`}</title>
       </Head>
-      <div className="min-h-[calc(100vh-16rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+      <div className="min-h-[calc(100vh-16rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-neutral-200">
           <div>
-            <h2 className="text-center text-3xl font-extrabold text-gray-900">
+            <h2 className="text-center text-2xl font-black text-neutral-950 uppercase tracking-tight">
               Crie sua conta
             </h2>
-            <p className="mt-2 text-center text-sm text-gray-600">
+            <p className="mt-2 text-center text-xs text-neutral-600">
               Já possui conta?{' '}
               <Link
                 href="/login"
-                className="font-medium text-indigo-600 hover:text-indigo-500 underline"
+                className="font-bold text-neutral-950 hover:underline"
               >
                 Entre aqui
               </Link>
@@ -81,11 +82,11 @@ export default function RegisterPage() {
             </div>
           )}
 
-          <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+          <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1"
               >
                 Nome Completo
               </label>
@@ -97,14 +98,14 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Ex: João da Silva"
-                className="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-xs placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                className="appearance-none block w-full px-3.5 py-2.5 border border-neutral-300 rounded-lg placeholder-neutral-400 focus:outline-hidden focus:ring-2 focus:ring-neutral-950 focus:border-neutral-950 text-sm"
               />
             </div>
 
             <div>
               <label
                 htmlFor="email-address"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1"
               >
                 E-mail
               </label>
@@ -117,14 +118,14 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="seu@email.com"
-                className="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-xs placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                className="appearance-none block w-full px-3.5 py-2.5 border border-neutral-300 rounded-lg placeholder-neutral-400 focus:outline-hidden focus:ring-2 focus:ring-neutral-950 focus:border-neutral-950 text-sm"
               />
             </div>
 
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1"
               >
                 Senha
               </label>
@@ -136,14 +137,14 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Mínimo de 6 caracteres"
-                className="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-xs placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                className="appearance-none block w-full px-3.5 py-2.5 border border-neutral-300 rounded-lg placeholder-neutral-400 focus:outline-hidden focus:ring-2 focus:ring-neutral-950 focus:border-neutral-950 text-sm"
               />
             </div>
 
             <div>
               <label
                 htmlFor="confirm-password"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1"
               >
                 Confirmar Senha
               </label>
@@ -155,15 +156,15 @@ export default function RegisterPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Repita a senha"
-                className="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-xs placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                className="appearance-none block w-full px-3.5 py-2.5 border border-neutral-300 rounded-lg placeholder-neutral-400 focus:outline-hidden focus:ring-2 focus:ring-neutral-950 focus:border-neutral-950 text-sm"
               />
             </div>
 
-            <div>
+            <div className="pt-2">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-colors"
+                className="w-full flex justify-center py-3 px-4 rounded-lg text-xs font-bold uppercase tracking-wider text-white bg-neutral-950 hover:bg-neutral-800 focus:outline-hidden focus:ring-2 focus:ring-neutral-950 disabled:opacity-50 transition-colors"
               >
                 {loading ? 'Cadastrando...' : 'Cadastrar'}
               </button>
@@ -174,4 +175,3 @@ export default function RegisterPage() {
     </>
   );
 }
-

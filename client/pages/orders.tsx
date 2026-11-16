@@ -44,7 +44,7 @@ export default function OrdersPage() {
   return (
     <>
       <Head>
-        <title>Meus Pedidos - TechStore</title>
+        <title>Meus Pedidos - MXM Maintenance</title>
       </Head>
 
       <div className="min-h-screen flex flex-col">

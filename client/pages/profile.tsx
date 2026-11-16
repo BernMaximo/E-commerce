@@ -36,7 +36,7 @@ export default function ProfilePage() {
   return (
     <>
       <Head>
-        <title>Perfil - TechStore</title>
+        <title>Perfil - MXM Maintenance</title>
       </Head>
 
       <div className="min-h-screen flex flex-col">

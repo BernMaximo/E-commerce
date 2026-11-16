@@ -58,10 +58,17 @@ export async function api<T = unknown>(endpoint: string, options: RequestInit = 
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  let response = await fetch(url, {
-    ...options,
-    headers,
-  });
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      ...options,
+      headers,
+    });
+  } catch (err) {
+    throw new Error(
+      `Não foi possível conectar ao servidor backend em ${API_BASE_URL}. Inicie o backend com 'cd server; npm run dev'.`
+    );
+  }
 
   // Access token expirado: renova com o refresh token e repete a requisição uma vez.
   const isAuthEndpoint = endpoint.startsWith('/api/auth/login') ||
@@ -72,10 +79,14 @@ export async function api<T = unknown>(endpoint: string, options: RequestInit = 
     const newToken = await refreshAccessToken();
 
     if (newToken) {
-      response = await fetch(url, {
-        ...options,
-        headers: { ...headers, Authorization: `Bearer ${newToken}` },
-      });
+      try {
+        response = await fetch(url, {
+          ...options,
+          headers: { ...headers, Authorization: `Bearer ${newToken}` },
+        });
+      } catch {
+        throw new Error(`Falha de conexão com o servidor ao renovar a sessão.`);
+      }
     }
   }
 

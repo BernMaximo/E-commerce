@@ -51,7 +51,7 @@ export default function CardCheckoutPage() {
             payer: {
               email: 'cliente@teste.com',
               first_name: cardName.split(' ')[0] || 'Cliente',
-              last_name: cardName.split(' ').slice(1).join(' ') || 'TechStore',
+              last_name: cardName.split(' ').slice(1).join(' ') || 'MXM Maintenance',
               identification: {
                 type: 'CPF',
                 number: '12345678909'
@@ -81,7 +81,7 @@ export default function CardCheckoutPage() {
   return (
     <>
       <Head>
-        <title>Pagamento com Cartão - TechStore</title>
+        <title>Pagamento com Cartão - MXM Maintenance</title>
       </Head>
 
       <div className="min-h-screen flex flex-col">

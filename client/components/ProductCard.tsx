@@ -17,50 +17,54 @@ export default function ProductCard({ product }: ProductCardProps) {
   const formatPrice = (price: number | string) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: 'BRL'
+      currency: 'BRL',
     }).format(typeof price === 'string' ? parseFloat(price) : price);
   };
 
   return (
-    <div className="group bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-      <Link href={`/product/${product.slug}`} className="block">
-        <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
+    <div className="group bg-white rounded-xl border border-neutral-200 hover:border-neutral-900 shadow-xs hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col justify-between">
+      <div>
+        <Link href={`/product/${product.slug}`} className="block relative aspect-square w-full overflow-hidden bg-neutral-100">
           <Image
             src={product.imageUrl || '/next.svg'}
             alt={product.name}
             fill
-            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-200"
+            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 100vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
-        </div>
-      </Link>
-      <div className="p-4">
-        <h3 className="text-sm font-medium text-gray-900 mb-1 line-clamp-2">
-          <Link href={`/product/${product.slug}`}>
-            {product.name}
-          </Link>
-        </h3>
-        <div className="flex items-center justify-between mt-2">
-          <span className="text-lg font-semibold text-indigo-600">
-            {formatPrice(product.price)}
-          </span>
-          {product.stock > 0 && (
-            <span className="text-xs text-green-600 font-medium">
-              Em estoque
+        </Link>
+        
+        <div className="p-4">
+          <h3 className="text-sm font-semibold text-neutral-900 mb-1.5 line-clamp-2 leading-snug">
+            <Link href={`/product/${product.slug}`} className="hover:underline">
+              {product.name}
+            </Link>
+          </h3>
+
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-neutral-100">
+            <span className="text-base font-bold text-neutral-950">
+              {formatPrice(product.price)}
             </span>
-          )}
-          {product.stock === 0 && (
-            <span className="text-xs text-red-600 font-medium">
-              Esgotado
-            </span>
-          )}
+            {product.stock > 0 ? (
+              <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+                Em estoque
+              </span>
+            ) : (
+              <span className="text-[11px] font-semibold text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full">
+                Esgotado
+              </span>
+            )}
+          </div>
         </div>
+      </div>
+
+      <div className="p-4 pt-0">
         <button
           onClick={handleAddToCart}
           disabled={product.stock === 0}
-          className="mt-3 w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-full px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white bg-neutral-950 rounded-lg hover:bg-neutral-800 disabled:bg-neutral-300 disabled:cursor-not-allowed transition-colors"
         >
-          Adicionar ao Carrinho
+          {product.stock === 0 ? 'Indisponível' : 'Adicionar ao Carrinho'}
         </button>
       </div>
     </div>

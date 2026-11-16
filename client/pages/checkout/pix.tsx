@@ -99,7 +99,7 @@ export default function PixCheckoutPage() {
   return (
     <>
       <Head>
-        <title>Pagamento Pix - TechStore</title>
+        <title>Pagamento Pix - MXM Maintenance</title>
       </Head>
 
       <div className="min-h-screen flex flex-col">

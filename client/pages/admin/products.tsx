@@ -140,7 +140,7 @@ export default function AdminProductsPage() {
   return (
     <>
       <Head>
-        <title>Produtos Admin - TechStore</title>
+        <title>Produtos Admin - MXM Maintenance</title>
       </Head>
 
       <AdminLayout
