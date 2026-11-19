@@ -48,7 +48,7 @@ export default function CategoryPage() {
     <>
       <Head>
         <title>
-          {category ? `${category.name} - TechStore` : 'Categoria'}
+          {category ? `${category.name} - MXM Maintenance` : 'Categoria'}
         </title>
       </Head>
 

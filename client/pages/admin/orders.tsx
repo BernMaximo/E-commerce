@@ -134,7 +134,7 @@ export default function AdminOrdersPage() {
   return (
     <>
       <Head>
-        <title>Pedidos Admin - TechStore</title>
+        <title>Pedidos Admin - MXM Maintenance</title>
       </Head>
 
       <AdminLayout

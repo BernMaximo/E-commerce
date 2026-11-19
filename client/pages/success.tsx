@@ -62,7 +62,7 @@ export default function SuccessPage() {
   return (
     <>
       <Head>
-        <title>Compra Concluída - TechStore</title>
+        <title>Compra Concluída - MXM Maintenance</title>
       </Head>
 
       <div className="min-h-screen flex flex-col">

@@ -256,7 +256,7 @@ export default function CheckoutPage() {
   return (
     <>
       <Head>
-        <title>Checkout - TechStore</title>
+        <title>Checkout - MXM Maintenance</title>
       </Head>
 
       <div className="min-h-screen flex flex-col">

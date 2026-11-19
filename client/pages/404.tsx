@@ -5,7 +5,7 @@ export default function NotFoundPage() {
   return (
     <>
       <Head>
-        <title>Página não encontrada - TechStore</title>
+        <title>Página não encontrada - MXM Maintenance</title>
       </Head>
 
       <div className="min-h-screen flex flex-col">
