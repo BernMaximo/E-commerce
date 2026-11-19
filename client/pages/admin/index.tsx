@@ -107,7 +107,7 @@ export default function AdminDashboardPage() {
   return (
     <>
       <Head>
-        <title>Dashboard Admin - TechStore</title>
+        <title>Dashboard Admin - MXM Maintenance</title>
       </Head>
 
       <AdminLayout

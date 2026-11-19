@@ -90,7 +90,7 @@ export default function AdminCategoriesPage() {
   return (
     <>
       <Head>
-        <title>Categorias Admin - TechStore</title>
+        <title>Categorias Admin - MXM Maintenance</title>
       </Head>
 
       <AdminLayout

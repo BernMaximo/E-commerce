@@ -17,3 +17,8 @@ if (!_env.success) {
 }
 
 export const env = _env.data
+
+// Garante que process.env.DATABASE_URL esteja sempre preenchido para o Prisma
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = env.DATABASE_URL
+}

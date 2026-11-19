@@ -5,7 +5,7 @@ export default function ServerErrorPage() {
   return (
     <>
       <Head>
-        <title>Erro no servidor - TechStore</title>
+        <title>Erro no servidor - MXM Maintenance</title>
       </Head>
 
       <div className="min-h-screen flex flex-col">
